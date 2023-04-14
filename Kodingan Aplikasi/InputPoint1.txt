@@ -1,0 +1,40 @@
+package com.example.tugasakhir;
+
+public class InputPoint1 {
+    private String setPoint1;
+    private String setTanaman1;
+    private String key;
+
+    public InputPoint1(){
+    }
+
+
+    public InputPoint1(String setPoint1, String setTanaman1) {
+        this.setPoint1 = setPoint1;
+        this.setTanaman1 = setTanaman1;
+    }
+
+    public String getSetPoint1() {
+        return setPoint1;
+    }
+
+    public void setSetPoint1(String setPoint1) {
+        this.setPoint1 = setPoint1;
+    }
+
+    public String getSetTanaman1() {
+        return setTanaman1;
+    }
+
+    public void setSetTanaman1(String setTanaman1) {
+        this.setTanaman1 = setTanaman1;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+}

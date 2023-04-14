@@ -1,0 +1,80 @@
+package com.example.tugasakhir;
+
+import android.app.Dialog;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+public class DialogForm2 extends DialogFragment {
+    String setPoint2asam, setPoint2basa, setTanaman2, key, pilih2;
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
+    public DialogForm2(String setPoint2asam, String setPoint2basa, String setTanaman2, String key, String pilih2) {
+        this.setPoint2asam = setPoint2asam;
+        this.setPoint2basa = setPoint2basa;
+        this.setTanaman2 = setTanaman2;
+        this.key = key;
+        this.pilih2 = pilih2;
+    }
+
+    TextView tset2asam, tset2basa, ttan2;
+    Button btn_simpan2;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View view2 = inflater.inflate(R.layout.activity_tambah1,container,false);
+        tset2asam = view2.findViewById(R.id.in_set2asam);
+        tset2basa = view2.findViewById(R.id.in_set2basa);
+        ttan2 = view2.findViewById(R.id.in_tanaman2);
+        btn_simpan2 = view2.findViewById(R.id.btn_input2);
+        tset2asam.setText(setPoint2asam);
+        tset2basa.setText(setPoint2basa);
+        ttan2.setText(setTanaman2);
+        btn_simpan2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String set2atas = tset2asam.getText().toString();
+                String set2bawah = tset2basa.getText().toString();
+                String tan2 = ttan2.getText().toString();
+                if (pilih2.equals("Ubah")) {
+                    database.child("2 Set Point").child(key).setValue(new InputPoint2(set2atas, set2bawah, tan2)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(view2.getContext(), "Berhasil diupdate", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(view2.getContext(), "Gagal diupdate", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+        return view2;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+    }
+
+}

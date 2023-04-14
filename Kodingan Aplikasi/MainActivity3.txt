@@ -1,0 +1,109 @@
+package com.example.tugasakhir;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+
+public class MainActivity3 extends AppCompatActivity {
+    FloatingActionButton tambah1, tambah2;
+    AdapterSetPoint1 adapterSetPoint1;
+    AdapterSetPoint2 adapterSetPoint2;
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+    ArrayList<InputPoint1> listInputPoint1;
+    ArrayList<InputPoint2> listInputPoint2;
+    RecyclerView tv_tampil1, tv_tampil2;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main3);
+        getSupportActionBar().hide();
+
+        //Input 1 Set Point
+        tambah1 = findViewById(R.id.btn_tambah1);
+        tambah1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity3.this,TambahActivity1.class));
+            }
+        });
+        tv_tampil1 = findViewById(R.id.tv_tampil1);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        tv_tampil1.setLayoutManager(layoutManager);
+        tv_tampil1.setItemAnimator(new DefaultItemAnimator());
+
+        TampilData1();
+
+        //Input 2 Set Point
+        tambah2 = findViewById(R.id.btn_tambah2);
+        tambah2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity3.this,TambahActivity2.class));
+            }
+        });
+        tv_tampil2 = findViewById(R.id.tv_tampil2);
+        RecyclerView.LayoutManager layoutManager2 = new LinearLayoutManager(this);
+        tv_tampil2.setLayoutManager(layoutManager2);
+        tv_tampil2.setItemAnimator(new DefaultItemAnimator());
+
+        TampilData2();
+    }
+
+    private void TampilData1() {
+        database.child("1 Set Point").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listInputPoint1 = new ArrayList<>();
+                for(DataSnapshot item1 : snapshot.getChildren()){
+                    InputPoint1 inputPoint1 = item1.getValue(InputPoint1.class);
+                    inputPoint1.setKey(item1.getKey());
+                    listInputPoint1.add(inputPoint1);
+                }
+                adapterSetPoint1 = new AdapterSetPoint1(listInputPoint1,MainActivity3.this);
+                tv_tampil1.setAdapter(adapterSetPoint1);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void TampilData2() {
+        database.child("2 Set Point").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listInputPoint2 = new ArrayList<>();
+                for(DataSnapshot item2 : snapshot.getChildren()){
+                    InputPoint2 inputPoint2 = item2.getValue(InputPoint2.class);
+                    inputPoint2.setKey(item2.getKey());
+                    listInputPoint2.add(inputPoint2);
+                }
+                adapterSetPoint2 = new AdapterSetPoint2(listInputPoint2, MainActivity3.this);
+                tv_tampil2.setAdapter(adapterSetPoint2);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+}

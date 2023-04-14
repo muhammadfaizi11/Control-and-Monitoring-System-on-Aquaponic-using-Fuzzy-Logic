@@ -1,0 +1,50 @@
+package com.example.tugasakhir;
+
+public class InputPoint2 {
+    private String setPoint2asam;
+    private String setPoint2basa;
+    private String setTanaman2;
+    private String key;
+
+    public InputPoint2(){
+
+    }
+
+    public InputPoint2(String setPoint2asam, String setPoint2basa, String setTanaman2) {
+        this.setPoint2asam = setPoint2asam;
+        this.setPoint2basa = setPoint2basa;
+        this.setTanaman2 = setTanaman2;
+    }
+
+    public String getSetPoint2asam() {
+        return setPoint2asam;
+    }
+
+    public void setSetPoint2asam(String setPoint2asam) {
+        this.setPoint2asam = setPoint2asam;
+    }
+
+    public String getSetPoint2basa() {
+        return setPoint2basa;
+    }
+
+    public void setSetPoint2basa(String setPoint2basa) {
+        this.setPoint2basa = setPoint2basa;
+    }
+
+    public String getSetTanaman2() {
+        return setTanaman2;
+    }
+
+    public void setSetTanaman2(String setTanaman2) {
+        this.setTanaman2 = setTanaman2;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+}

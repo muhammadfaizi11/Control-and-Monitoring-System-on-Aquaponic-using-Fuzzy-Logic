@@ -1,0 +1,163 @@
+package com.example.tugasakhir;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+public class MainActivity2 extends AppCompatActivity {
+    private ImageView input;
+    private TextView kualitaspH, pH1, pH2, phup, phdown, setPoint;
+    String statusSistem = "0", val_pH1 = "0", val_pH2 = "0", statusPompaUp = "0", statusPompaDown = "0";
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference databaseStatusSistem = FirebaseDatabase.getInstance().getReference("Status Sistem");
+    DatabaseReference databaseNilaipH = FirebaseDatabase.getInstance().getReference("Sensor pH");
+    DatabaseReference databaseStatusPompaUp = FirebaseDatabase.getInstance().getReference("Pompa Up");
+    DatabaseReference databaseStatusPompaDown = FirebaseDatabase.getInstance().getReference("Pompa Down");
+    DatabaseReference database1SetPoint = FirebaseDatabase.getInstance().getReference("1 Set Point").child("Input");
+    DatabaseReference database2SetPoint = FirebaseDatabase.getInstance().getReference("2 Set Point").child("Input");
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main2);
+        getSupportActionBar().hide();
+
+        //Get Data Kualitas pH
+        kualitaspH = findViewById(R.id.kualitas);
+        databaseStatusSistem.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild("Status")) {
+                    statusSistem = snapshot.child("Status").getValue().toString();
+                    kualitaspH.setText("Sistem " + statusSistem);
+                } else {
+                    kualitaspH.setText("Sistem Belum Terdeteksi");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        //Get Data Status Set Point
+        setPoint = findViewById(R.id.statusSetPoint);
+        database1SetPoint.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild("setPoint1")) {
+                    setPoint.setText("1 Set Point Terinput");
+                } else {
+                    setPoint.setText("Set Point Belum Terinput");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        database2SetPoint.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild("setPoint2asam") && snapshot.hasChild("setPoint2basa")) {
+                    setPoint.setText("2 Set Point Terinput");
+                } else {
+                    setPoint.setText("Set Point Belum Terinput");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        //Get Data nilai sensor
+        pH1 = findViewById(R.id.nilaipH1);
+        pH2 = findViewById(R.id.nilaipH2);
+        databaseNilaipH.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild("Input1")) {
+                    val_pH1 = snapshot.child("Input1").getValue().toString();
+                    pH1.setText("Nilai pH : " + val_pH1);
+                }
+                if (snapshot.hasChild("Input2")) {
+                    val_pH2 = snapshot.child("Input2").getValue().toString();
+                    pH2.setText("Nilai pH : " + val_pH2);
+                } else {
+                    pH1.setText("Nilai pH Belum Terdeteksi");
+                    pH2.setText("Nilai pH Belum Terdeteksi");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        //Get Status Pompa
+        phup = findViewById(R.id.pompaphup);
+        phdown = findViewById(R.id.pompaphdown);
+        databaseStatusPompaUp.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild("Status")) {
+                    statusPompaUp = snapshot.child("Status").getValue().toString();
+                    phup.setText("Status Pompa : " + statusPompaUp);
+                } else {
+                    phup.setText("Belum Terdeteksi");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        databaseStatusPompaDown.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild("Status")) {
+                    statusPompaDown = snapshot.child("Status").getValue().toString();
+                    phdown.setText("Status Pompa : " + statusPompaDown);
+                } else {
+                    phdown.setText("Belum Terdeteksi");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+        //Button ke layout input set point pH
+        input = findViewById(R.id.inputsetpoint);
+        input.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent addsetpoint = new Intent(MainActivity2.this, MainActivity3.class);
+                startActivity(addsetpoint);
+            }
+        });
+    }
+}

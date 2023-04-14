@@ -1,0 +1,83 @@
+package com.example.tugasakhir;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.InputFilter;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+public class TambahActivity1 extends AppCompatActivity {
+
+    EditText set1,tanaman1;
+    Button input1;
+
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_tambah1);
+        getSupportActionBar().hide();
+
+        set1 = findViewById(R.id.in_set1);
+        set1.setFilters(new InputFilter[]{new FilterInputpH("1","14")});
+        tanaman1 = findViewById(R.id.in_tanaman1);
+        input1 = findViewById(R.id.btn_input1);
+
+        input1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String getSet1 = set1.getText().toString();
+                String getTanaman1 = tanaman1.getText().toString();
+
+                if(getSet1.isEmpty()) {
+                    set1.setError("Masukkan Set Point");
+                } else if(getTanaman1.isEmpty()) {
+                    tanaman1.setError("Masukkan Tanaman");
+                } else {
+                    database.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if (snapshot.hasChild("2 Set Point")) {
+                                Toast.makeText(TambahActivity1.this,"Data Gagal Terkirim", Toast.LENGTH_SHORT);
+                            } else {
+                                database.child("1 Set Point").child("Input").setValue(new InputPoint1(getSet1,getTanaman1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(TambahActivity1.this,"Data Terkirim",Toast.LENGTH_SHORT);
+                                        startActivity(new Intent(TambahActivity1.this,MainActivity3.class));
+                                        finish();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(TambahActivity1.this,"Data Gagal Terkirim",Toast.LENGTH_SHORT);
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+}

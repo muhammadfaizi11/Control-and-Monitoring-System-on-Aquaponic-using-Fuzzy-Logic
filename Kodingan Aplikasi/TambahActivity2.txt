@@ -1,0 +1,87 @@
+package com.example.tugasakhir;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.InputFilter;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+public class TambahActivity2 extends AppCompatActivity {
+    EditText set2asam, set2basa,tanaman2;
+    Button input2;
+
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_tambah2);
+        getSupportActionBar().hide();
+
+        set2asam = findViewById(R.id.in_set2asam);
+        set2asam.setFilters(new InputFilter[]{new FilterInputpH("1","14")});
+        set2basa = findViewById(R.id.in_set2basa);
+        set2basa.setFilters(new InputFilter[]{new FilterInputpH("1","14")});
+        tanaman2 = findViewById(R.id.in_tanaman2);
+        input2 = findViewById(R.id.btn_input2);
+        input2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String getSet2asam = set2asam.getText().toString();
+                String getSet2basa = set2basa.getText().toString();
+                String getTanaman2 = tanaman2.getText().toString();
+
+                if(getSet2asam.isEmpty()) {
+                    set2asam.setError("Masukkan Set Point Bawah");
+                } else if(getSet2basa.isEmpty()) {
+                    set2basa.setError("Masukkan Set Point Atas");
+                } else if(getTanaman2.isEmpty()) {
+                    tanaman2.setError("Masukkan Tanaman");
+                } else {
+                    database.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.hasChild("1 Set Point")){
+                                Toast.makeText(TambahActivity2.this,"Data Gagal Terkirim", Toast.LENGTH_SHORT);
+                            } else {
+                                database.child("2 Set Point").child("Input").setValue(new InputPoint2(getSet2asam, getSet2basa, getTanaman2)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(TambahActivity2.this, "Data Terkirim", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(TambahActivity2.this, MainActivity3.class));
+                                        finish();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(TambahActivity2.this, "Data Gagal Terkirim", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+}

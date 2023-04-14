@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".TambahActivity1"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/teal_200">
+
+        <TextView
+            android:id="@+id/teks_view_tambah_1setpoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Input Set Point"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/in_set1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Input Set Point"
+        android:padding="20dp"
+        android:textAlignment="center" />
+
+
+    <EditText
+        android:id="@+id/in_tanaman1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Input Tanaman"
+        android:padding="20dp"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/btn_input1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:text="Input"
+        android:layout_gravity="center"
+        android:layout_margin="20dp" />
+
+</LinearLayout>

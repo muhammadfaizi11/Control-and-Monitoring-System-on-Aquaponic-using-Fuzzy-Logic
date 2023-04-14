@@ -1,0 +1,76 @@
+package com.example.tugasakhir;
+
+import android.app.Dialog;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+public class DialogForm1 extends DialogFragment {
+    String setPoint1, setTanaman1, key, pilih1;
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
+    public DialogForm1(String setPoint1, String setTanaman1, String key, String pilih1) {
+        this.setPoint1 = setPoint1;
+        this.setTanaman1 = setTanaman1;
+        this.key = key;
+        this.pilih1 = pilih1;
+    }
+
+    TextView tset1, ttan1;
+    Button btn_simpan1;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final View view1 = inflater.inflate(R.layout.activity_tambah1, container, false);
+        tset1 = view1.findViewById(R.id.in_set1);
+        ttan1 = view1.findViewById(R.id.in_tanaman1);
+        btn_simpan1 = view1.findViewById(R.id.btn_input1);
+        tset1.setText(setPoint1);
+        ttan1.setText(setTanaman1);
+        btn_simpan1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String set1 = tset1.getText().toString();
+                String tan1 = ttan1.getText().toString();
+                if (pilih1.equals("Ubah")) {
+                    database.child("1 Set Point").child(key).setValue(new InputPoint1(set1, tan1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(view1.getContext(), "Berhasil diupdate", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(view1.getContext(), "Gagal diupdate", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+        return view1;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+
+    }
+}

@@ -1,0 +1,114 @@
+package com.example.tugasakhir;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.List;
+
+public class AdapterSetPoint2 extends RecyclerView.Adapter<AdapterSetPoint2.MyViewHolderSetPoint2> {
+    private List<InputPoint2> mList2;
+    private Activity activity2;
+
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
+    public AdapterSetPoint2(List<InputPoint2>mList2, Activity activity2){
+        this.mList2 = mList2;
+        this.activity2 = activity2;
+    }
+
+    @NonNull
+    @Override
+    public MyViewHolderSetPoint2 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater2 = LayoutInflater.from(parent.getContext());
+        View viewItem2 = inflater2.inflate(R.layout.layout_item2,parent,false);
+        return new AdapterSetPoint2.MyViewHolderSetPoint2(viewItem2);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolderSetPoint2 holder, int position) {
+        final InputPoint2 data2 = mList2.get(position);
+        holder.tv_set2asam.setText("Set Point Asam : " + data2.getSetPoint2asam());
+        holder.tv_set2basa.setText("Set Point Basa : " + data2.getSetPoint2basa());
+        holder.tv_tanaman2.setText("Tanaman : " + data2.getSetTanaman2());
+        holder.btn_hapus2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(activity2);
+                builder2.setPositiveButton("Iya", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        database.child("2 Set Point").child(data2.getKey()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(activity2,"Data Berhasil Dihapus", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(activity2,"Data Gagal Dihapus",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }).setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).setMessage("Apakah Anda Yakin Mau Menghapus?");
+                builder2.show();
+            }
+        });
+        holder.hasil2.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                FragmentManager manager = ((AppCompatActivity)activity2).getSupportFragmentManager();
+                DialogForm2 dialogForm2 = new DialogForm2(
+                        data2.getSetPoint2asam(),
+                        data2.getSetPoint2basa(),
+                        data2.getSetTanaman2(),
+                        data2.getKey(),
+                        "Ubah"
+                );
+                dialogForm2.show(manager, "form");
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return mList2.size();
+    }
+
+    public class MyViewHolderSetPoint2 extends RecyclerView.ViewHolder {
+        TextView tv_set2asam, tv_set2basa, tv_tanaman2;
+        ImageView btn_hapus2;
+        CardView hasil2;
+        public MyViewHolderSetPoint2(@NonNull View itemView) {
+            super(itemView);
+            tv_set2asam = itemView.findViewById(R.id.tv_set2asam);
+            tv_set2basa = itemView.findViewById(R.id.tv_set2basa);
+            tv_tanaman2 = itemView.findViewById(R.id.tv_tanaman2);
+            btn_hapus2 = itemView.findViewById(R.id.hapus2);
+            hasil2 = itemView.findViewById(R.id.card_hasil2);
+        }
+    }
+}
